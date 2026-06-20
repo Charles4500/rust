@@ -7,20 +7,30 @@ use diesel::prelude::*;
 use diesel::SelectableHelper;
 use diesel_async::RunQueryDsl;
 
-use crate::db::Pool;
-use crate::models::user::{NewUser, UpdateUser, User};
-use crate::schema::users;
-
 use super::error::internal_error;
+use crate::{
+    common::validation::ValidatedJson,
+    dto::user_dto::{CreateUserDTO, UpdateUserDTO},
+    models::user::NewUser,
+};
+
+use crate::db::Pool;
+use crate::models::user::{UpdateUser, User};
+use crate::schema::users;
 
 pub async fn create_user(
     State(pool): State<Pool>,
-    Json(new_user): Json<NewUser>,
+    ValidatedJson(payload): ValidatedJson<CreateUserDTO>,
 ) -> Result<Json<User>, (StatusCode, String)> {
     let mut conn = pool.get().await.map_err(internal_error)?;
 
+    let new_user = NewUser {
+        name: payload.name,
+        email: payload.email,
+    };
+
     let user = diesel::insert_into(users::table)
-        .values(&new_user)
+        .values(new_user)
         .returning(User::as_returning())
         .get_result(&mut conn)
         .await
@@ -64,9 +74,15 @@ pub async fn get_user(
 pub async fn update_user(
     State(pool): State<Pool>,
     Path(user_id): Path<i32>,
-    Json(update_data): Json<UpdateUser>,
+    ValidatedJson(payload): ValidatedJson<UpdateUserDTO>,
 ) -> Result<Json<User>, (StatusCode, String)> {
     let mut conn = pool.get().await.map_err(internal_error)?;
+
+    // Convert DTO to UpdateUser
+    let update_data = UpdateUser {
+        name: payload.name,
+        email: payload.email,
+    };
 
     let user = diesel::update(users::table.find(user_id))
         .set(&update_data)
