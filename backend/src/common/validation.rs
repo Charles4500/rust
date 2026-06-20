@@ -46,9 +46,7 @@ where
                 .map(|(field, field_errors)| {
                     let messages: Vec<String> = field_errors
                         .iter()
-                        .filter_map(|e| {
-                            e.message.as_ref().map(|msg| msg.to_string()) // Convert Cow<str> to String
-                        })
+                        .filter_map(|e| e.message.as_ref().map(|msg| msg.to_string()))
                         .collect();
                     format!("{}: {}", field, messages.join(", "))
                 })
