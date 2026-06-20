@@ -21,7 +21,7 @@ async fn main() {
 
     // 2. Mount Routes
     let app = Router::new()
-        .merge(routes::user_routes::user_routes()) // Merge user routes
+        .merge(routes::user_routes::user_routes())
         .with_state(pool);
 
     // Start server
