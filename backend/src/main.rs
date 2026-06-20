@@ -7,8 +7,9 @@ mod models;
 mod routes;
 mod schema;
 
-use axum::Router;
+use axum::{http::Method, Router};
 use std::net::SocketAddr;
+use tower_http::cors::{AllowOrigin, CorsLayer};
 
 #[tokio::main]
 async fn main() {
@@ -21,9 +22,21 @@ async fn main() {
     // Setup connection pool
     let pool = db::create_pool(&config.database_url).await;
 
+    let origin = config.client_url.parse().unwrap();
+
+    let cors = CorsLayer::new()
+        .allow_origin(AllowOrigin::exact(origin))
+        .allow_methods(vec![
+            Method::GET,
+            Method::POST,
+            Method::PATCH,
+            Method::DELETE,
+        ]);
+
     // 2. Mount Routes
     let app = Router::new()
         .merge(routes::user_routes::user_routes())
+        .layer(cors)
         .with_state(pool);
 
     // Start server
