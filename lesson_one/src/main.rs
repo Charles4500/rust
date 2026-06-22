@@ -55,6 +55,13 @@ fn main() {
     //Call function in the main file
     test_function(12);
     greet_user(my_name);
+    let ans = longest("Charles", "Kibet");
+    println!("The answer is {}", ans);
+    print_length("John");
+
+    let mut s = String::from("Hello");
+    append_worlds(&mut s);
+    println!("{}", s) //Print the modified s
 }
 
 //Functions
@@ -68,4 +75,44 @@ fn greet_user(name: &str) {
     println!("Hello, {}!", name)
 }
 
-//53
+//Ownership , Borrowing and lifetime
+
+//Ownership --> This is rust's feature for managing memory ensuring memory safety without a  need of  a garbage collector
+//Each value has a owner and can only be one owner at a time
+
+//Ownership rules:
+//1. Each value in Rust has a single owner
+//2. Values are dropped automatically if owner goes of out scope
+//3. Ownership can be transferred using moves or borrowed using references
+
+//Borrowing allows to temporarily loan a reference to a value without tranfer of ownership
+//There are two types of borrowing in Rust:
+//Immutable allows multiple readers but no writers. References created with &  are immutable by default
+
+//Mutable Allows one writer and no readers. References created with &mut are mutable
+
+//Lifetimes are annotations that specify the relationship between references in Rust
+//Are denoted using single quoted(') and are usually generic params
+
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {
+        return x;
+    } else {
+        return y;
+    }
+}
+
+//Rust's ownership plays a vital role in ensuring  thread safety and preventing data races in concurrent  programming
+
+//Immutable --> Read only
+fn print_length(s: &str) {
+    println!("Length: {}", s.len())
+}
+
+//Mutable --> Write
+fn append_worlds(s: &mut String) {
+    s.push_str(" World");
+}
+
+//References are lightweight pointers that refer to values without taking ownership
+//Used extensively in Rust to pass data between function s and share data among different parts of the codebase
