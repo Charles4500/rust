@@ -61,7 +61,77 @@ fn main() {
 
     let mut s = String::from("Hello");
     append_worlds(&mut s);
-    println!("{}", s) //Print the modified s
+    println!("{}", s); //Print the modified s
+
+    //Structs , Enums and Pattern Matching
+
+    //Defining and using structs in Rust allows creating custom data types with named fields, enabling encapsulation of related data and behaviour into cohesive units
+
+    struct Person {
+        name: String,
+        age: u32,
+        is_student: bool,
+    }
+    //We can create instances of a struct
+    let person_one = Person {
+        name: String::from("John"),
+        age: 30,
+        is_student: false,
+    };
+
+    //Accessing struct
+    println!("Name: {}", person_one.name);
+    println!("Age: {}", person_one.age);
+    println!("Is Student: {}", person_one.is_student);
+
+    //Mutables --> Structs allow modification of values after instantiation
+
+    let mut person_two = Person {
+        name: String::from("Bob"),
+        age: 25,
+        is_student: true,
+    };
+
+    person_two.age = 26;
+
+    println!("New age of {} is {}", person_two.name, person_two.age); //Name of Bob is 26
+
+    impl Person {
+        fn new(name: String, age: u32, is_student: bool) -> Person {
+            Person {
+                name,
+                age,
+                is_student,
+            }
+        }
+    }
+
+    let person_3 = Person::new(String::from("Charlie"), 35, false);
+
+    println!("Third person {}", person_3.name);
+
+    //Enumarations(enums) and their uses
+    #[derive(Debug)]
+    enum TrafficLight {
+        Red,
+        Green,
+        Yellow,
+    }
+    let red_light = TrafficLight::Red;
+    let green_light = TrafficLight::Green;
+    println!("{:#?} and  {:#?}", red_light, green_light);
+
+    //Pattern
+    //Pattern matching is a powerful feature for destructuring enums and match again their variants
+    let traffic_light = TrafficLight::Yellow;
+
+    match traffic_light {
+        TrafficLight::Red => println!("Stop!"),
+        TrafficLight::Green => println!("Go!"),
+        TrafficLight::Yellow => println!("Prepare to stop!"),
+    } //Prepare to stop!
+
+    //Option --> Handling potentially absent values
 }
 
 //Functions
