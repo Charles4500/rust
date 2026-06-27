@@ -12,6 +12,14 @@ pub struct CreateUserDTO {
 
     #[validate(email(message = "Invalid email format"))]
     pub email: String,
+
+    pub password: String,
+}
+
+#[derive(Debug, Validate, Deserialize)]
+pub struct LoginDto {
+    pub email: String,
+    pub password: String,
 }
 
 #[derive(Debug, Validate, Deserialize)]

@@ -1,7 +1,0 @@
--- Your SQL goes here
-CREATE TABLE IF NOT EXISTS users(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    email VARCHAR NOT NULL,
-    created_date TIMESTAMP NOT NULL DEFAULT NOW()
-)

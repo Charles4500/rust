@@ -2,9 +2,11 @@
 
 diesel::table! {
     users (id) {
-        id -> Int4,
-        name -> Varchar,
+        id -> Uuid,
         email -> Varchar,
-        created_date -> Timestamp,
+        password_hash -> Nullable<Varchar>,
+        name -> Varchar,
+        provider -> Varchar,
+        created_at -> Nullable<Timestamptz>,
     }
 }
