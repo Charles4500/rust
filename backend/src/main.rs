@@ -47,7 +47,7 @@ async fn main() {
     // 2. Mount Routes
     let app = Router::new()
         .merge(routes::test_route::test_route())
-        .merge(routes::auth_route::auth_routes())
+        .nest("/api/v1/auth", routes::auth_route::auth_routes())
         .layer(cors)
         .with_state(state);
 
