@@ -5,6 +5,6 @@ use crate::state::AppState;
 
 pub fn auth_routes() -> Router<AppState> {
     Router::new()
-        .route("'/v1/api/auth/register", post(register))
-        .route("/v1/api/auth/login", post(login))
+        .route("/api/v1/auth/register", post(register))
+        .route("/api/v1/auth/login", post(login))
 }
