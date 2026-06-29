@@ -22,15 +22,15 @@ pub struct LoginDto {
     pub password: String,
 }
 
-#[derive(Debug, Validate, Deserialize)]
-pub struct UpdateUserDTO {
-    #[validate(length(
-        min = 2,
-        max = 100,
-        message = "Name must be between 2 and 100 characters"
-    ))]
-    pub name: Option<String>,
+// #[derive(Debug, Validate, Deserialize)]
+// pub struct UpdateUserDTO {
+//     #[validate(length(
+//         min = 2,
+//         max = 100,
+//         message = "Name must be between 2 and 100 characters"
+//     ))]
+//     pub name: Option<String>,
 
-    #[validate(email(message = "Invalid email format"))]
-    pub email: Option<String>,
-}
+//     #[validate(email(message = "Invalid email format"))]
+//     pub email: Option<String>,
+// }

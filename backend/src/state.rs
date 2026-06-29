@@ -2,6 +2,8 @@ use diesel_async::pooled_connection::bb8::Pool;
 use diesel_async::AsyncPgConnection;
 use oauth2::{basic::*, EndpointNotSet, EndpointSet, StandardRevocableToken};
 
+use crate::services::mpesa::MpesaService;
+
 pub type GoogleOAuthClient = oauth2::Client<
     BasicErrorResponse,
     BasicTokenResponse,
@@ -20,4 +22,5 @@ pub struct AppState {
     pub db_pool: Pool<AsyncPgConnection>,
     pub jwt_secret: String,
     pub google_client: GoogleOAuthClient,
+    pub mpesa: MpesaService,
 }

@@ -6,6 +6,7 @@ mod handlers;
 mod models;
 mod routes;
 mod schema;
+mod services;
 mod state;
 mod utils;
 use axum::{http::Method, Router};
@@ -13,7 +14,7 @@ use axum::{http::Method, Router};
 use std::net::SocketAddr;
 use tower_http::cors::{AllowOrigin, CorsLayer};
 
-use crate::state::AppState;
+use crate::{configs::mpesa::MpesaConfig, services::mpesa::MpesaService, state::AppState};
 
 #[tokio::main]
 async fn main() {
@@ -27,10 +28,13 @@ async fn main() {
     // Setup connection pool
     let pool = db::create_pool(&db_config.database_url).await;
 
+    let mpesa = MpesaService::new(MpesaConfig::from_env());
+
     let state = AppState {
         db_pool: pool,
         jwt_secret: std::env::var("JWT_SECRET").expect("JWT_SECRET must be set"),
         google_client,
+        mpesa,
     };
 
     let origin = db_config.client_url.parse().unwrap();
@@ -48,6 +52,7 @@ async fn main() {
     let app = Router::new()
         .merge(routes::test_route::test_route())
         .nest("/api/v1/auth", routes::auth_route::auth_routes())
+        .nest("/api/v1/mpesa", routes::mpesa::routes())
         .layer(cors)
         .with_state(state);
 
