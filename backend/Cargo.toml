@@ -15,6 +15,7 @@ diesel = { version = "2.3", features = ["postgres", "uuid","chrono"] }
 diesel-async = { version = "0.8", features = ["postgres", "bb8"] }
 diesel_migrations = "2.3"
 bb8 = "0.9"
+reqwest = { version = "0.13", features = ["json"] }
 
 #Utilities
 dotenv = "0.15"
@@ -23,6 +24,7 @@ tower-http = {version = "0.7.0", features= ["cors"]}
 argon2 = "0.5.3"
 jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }
 oauth2 = "5.0.0"
+base64 = "0.22"
 rand = "0.10.1"
 axum-extra ={version = "0.12.6", features =["cookie"]}
 
