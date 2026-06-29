@@ -11,14 +11,20 @@ mod state;
 mod utils;
 use axum::{http::Method, Router};
 
+use oauth2_passkey_axum::oauth2_passkey_full_router;
 use std::net::SocketAddr;
 use tower_http::cors::{AllowOrigin, CorsLayer};
 
-use crate::{configs::mpesa::MpesaConfig, services::mpesa::MpesaService, state::AppState};
+use crate::{
+    configs::mpesa::MpesaConfig, routes::auth_route, services::mpesa::MpesaService, state::AppState,
+};
 
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
+    oauth2_passkey_axum::init()
+        .await
+        .expect("Failed to initialize oauth2-passkey — check DB connection and env vars");
     // let config = config::Config::from_env();
     let db_config = configs::db_config::Config::from_env();
     let google_client = configs::auth::get_google_oauth_client(None, None, None);
@@ -41,6 +47,7 @@ async fn main() {
 
     let cors = CorsLayer::new()
         .allow_origin(AllowOrigin::exact(origin))
+        .allow_credentials(true)
         .allow_methods(vec![
             Method::GET,
             Method::POST,
@@ -49,12 +56,14 @@ async fn main() {
         ]);
 
     // 2. Mount Routes
-    let app = Router::new()
+    let api_routes = Router::new()
+        .nest("/api/v1/auth", auth_route::auth_routes())
         .merge(routes::test_route::test_route())
-        .nest("/api/v1/auth", routes::auth_route::auth_routes())
-        .nest("/api/v1/mpesa", routes::mpesa::routes())
-        .layer(cors)
-        .with_state(state);
+        .nest("/api/v1/mpesa", routes::mpesa::routes());
+
+    let auth_routes: Router<AppState> = oauth2_passkey_full_router().with_state(());
+
+    let app = api_routes.merge(auth_routes).layer(cors).with_state(state);
 
     // Start server
     let address = SocketAddr::from(([127, 0, 0, 1], 8000));
